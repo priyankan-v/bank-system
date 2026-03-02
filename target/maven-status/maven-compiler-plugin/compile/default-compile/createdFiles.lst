@@ -1,0 +1,3 @@
+com\bank\util\DBConnection.class
+com\bank\config\FlywayConfig.class
+com\bank\MainApp.class

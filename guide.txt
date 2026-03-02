@@ -1,0 +1,17 @@
+`This is a guiding text.
+
+## How to start the app.
+run the following at "E:\J\bank-system"
+
+1. mvn clean install
+2. mvn javafx:run
+
+## Check database: run the following in the terminal
+1. mysql -u root -p (ENTER)
+2. password (ENTER)
+
+USE bank_system;
+SHOW TABLES;
+SELECT * FROM flyway_schema_history;
+
+4. exit (ENTER)
