@@ -8,20 +8,18 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class MainApp extends Application {
+public class AdminApp extends Application {
 
     @Override
     public void start(Stage stage) {
 
-        FlywayConfig.migrate(false); // true only in development
+        FlywayConfig.migrate(false);  // true only in development
 
-        Label label = new Label("Bank System Started Successfully");
+        Label label = new Label("Admin Control Panel");
 
-        StackPane root = new StackPane(label);
+        Scene scene = new Scene(new StackPane(label), 900, 650);
 
-        Scene scene = new Scene(root, 600, 600);
-
-        stage.setTitle("Bank Management System");
+        stage.setTitle("Bank System - Admin App");
         stage.setScene(scene);
         stage.show();
     }
