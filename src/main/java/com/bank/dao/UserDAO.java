@@ -36,16 +36,13 @@ public class UserDAO {
     }
 
     //  UPDATE BALANCE 
-    public void updateBalance(Long userId, BigDecimal newBalance) {
+    public void updateBalance(Connection conn, Long userId, BigDecimal newBalance) throws SQLException {
 
         String sql = "UPDATE users SET balance = ? WHERE id = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setBigDecimal(1, newBalance);
             stmt.setLong(2, userId);
-
             stmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -124,5 +121,21 @@ public class UserDAO {
         }
 
         return user;
+    }
+
+    // UNLOCK ACCOUNT
+    public void unlockAccount(Long userId) {
+
+        String sql = "UPDATE users SET locked = FALSE, failed_attempts = 0 WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, userId);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
