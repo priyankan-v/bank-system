@@ -8,97 +8,123 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import com.bank.model.User;
-import com.bank.util.DBConnection;
 
 public class UserDAO {
 
     //  FIND USER BY ACCOUNT NUMBER 
-    public User findByAccountNumber(String accountNumber) {
+    public User findByAccountNumber(Connection conn, String accountNumber) throws SQLException {
 
-        String sql = "SELECT * FROM users WHERE account_number = ?";
+        String sql = "SELECT * FROM users WHERE account_number = ? AND active = TRUE";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, accountNumber);
 
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return mapResultSetToUser(rs);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToUser(rs);
+                }
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
         return null;
     }
 
     //  UPDATE BALANCE 
-    public void updateBalance(Connection conn, Long userId, BigDecimal newBalance) throws SQLException {
+    public void updateBalance(Connection conn, String accountNumber, BigDecimal newBalance) throws SQLException {
 
-        String sql = "UPDATE users SET balance = ? WHERE id = ?";
+        String sql = "UPDATE users SET balance = ? WHERE account_number = ? AND active = TRUE";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setBigDecimal(1, newBalance);
-            stmt.setLong(2, userId);
+            stmt.setString(2, accountNumber);
             stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
     //  UPDATE FAILED ATTEMPTS 
-    public void updateFailedAttempts(Long userId, int attempts) {
+    public void updateFailedAttempts(Connection conn, String accountNumber, int attempts) throws SQLException {
 
-        String sql = "UPDATE users SET failed_attempts = ? WHERE id = ?";
+        String sql = "UPDATE users SET failed_attempts = ? WHERE account_number = ? AND active = TRUE";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, attempts);
-            stmt.setLong(2, userId);
-
+            stmt.setString(2, accountNumber);
             stmt.executeUpdate();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
     //  LOCK ACCOUNT 
-    public void lockAccount(Long userId) {
+    public void lockAccount(Connection conn, String accountNumber) throws SQLException {
 
-        String sql = "UPDATE users SET locked = TRUE WHERE id = ?";
+        String sql = "UPDATE users SET locked = TRUE WHERE account_number = ? AND active = TRUE";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setLong(1, userId);
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, accountNumber);
             stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
+    // UNLOCK ACCOUNT
+    public void unlockAccount(Connection conn, String accountNumber) throws SQLException {
+
+        String sql = "UPDATE users SET locked = FALSE, failed_attempts = 0 WHERE account_number = ? AND active = TRUE";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, accountNumber);
+            stmt.executeUpdate();
+
+        }
+    }
+    
     //  UPDATE PIN 
-    public void updatePin(Long userId, String newPinHash) {
+    public void updatePin(Connection conn, String accountNumber, String newPinHash) throws SQLException {
 
-        String sql = "UPDATE users SET pin_hash = ? WHERE id = ?";
+        String sql = "UPDATE users SET pin_hash = ? WHERE account_number = ? AND active = TRUE";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, newPinHash);
-            stmt.setLong(2, userId);
+            stmt.setString(2, accountNumber);
 
             stmt.executeUpdate();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }
+    }
+
+    // CREATE ACCOUNT
+    public void createUser(Connection conn, String name,
+                       String accountNumber,
+                       String pinHash,
+                       java.math.BigDecimal balance) throws Exception {
+
+        String sql = """
+                INSERT INTO users (name, account_number, pin_hash, balance)
+                VALUES (?, ?, ?, ?)
+                """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, name);
+            stmt.setString(2, accountNumber);
+            stmt.setString(3, pinHash);
+            stmt.setBigDecimal(4, balance);
+
+            stmt.executeUpdate();
+        }
+    }
+
+    // DELETE ACCOUNT
+    public void deleteUser(Connection conn, String accountNumber) throws Exception {
+
+        String sql = "UPDATE users SET active = FALSE WHERE account_number = ? AND active = TRUE";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, accountNumber);
+            stmt.executeUpdate();
         }
     }
 
@@ -111,6 +137,7 @@ public class UserDAO {
         user.setName(rs.getString("name"));
         user.setAccountNumber(rs.getString("account_number"));
         user.setPinHash(rs.getString("pin_hash"));
+        user.setActive(rs.getBoolean("active"));
         user.setBalance(rs.getBigDecimal("balance"));
         user.setFailedAttempts(rs.getInt("failed_attempts"));
         user.setLocked(rs.getBoolean("locked"));
@@ -121,21 +148,5 @@ public class UserDAO {
         }
 
         return user;
-    }
-
-    // UNLOCK ACCOUNT
-    public void unlockAccount(Long userId) {
-
-        String sql = "UPDATE users SET locked = FALSE, failed_attempts = 0 WHERE id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setLong(1, userId);
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 }

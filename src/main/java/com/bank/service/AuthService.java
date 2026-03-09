@@ -1,52 +1,146 @@
 package com.bank.service;
 
+import java.sql.Connection;
+
+import com.bank.dao.AdminDAO;
 import com.bank.dao.UserDAO;
+import com.bank.model.Admin;
 import com.bank.model.User;
 import com.bank.service.exceptions.AccountLockedException;
 import com.bank.service.exceptions.InvalidCredentialsException;
+import com.bank.util.DBConnection;
 import com.bank.util.PasswordUtil;
 
 public class AuthService {
 
     private final UserDAO userDAO = new UserDAO();
+    private final AdminDAO adminDAO = new AdminDAO();
+    private final AuditService auditService = new AuditService();
+
     private static final int MAX_FAILED_ATTEMPTS = 3;
 
-    public User login(String accountNumber, String rawPin) {
+    public User userLogin(String accountNumber, String rawPin) {
 
         // Check account existence
-        User user = userDAO.findByAccountNumber(accountNumber);
+        try (Connection conn = DBConnection.getConnection()) {
+            conn.setAutoCommit(false); 
 
-        if (user == null) {
-            throw new InvalidCredentialsException("Invalid account number.");
-        }
+            try {
+                User user = userDAO.findByAccountNumber(conn, accountNumber);
 
-        // Check if account locked
-        if (user.isLocked()) {
-            throw new AccountLockedException("Account is locked. Contact bank.");
-        }
+                if (user == null) {
+                    throw new InvalidCredentialsException("Invalid account number.");
+                }
 
-        // Verify PIN
-        boolean valid = PasswordUtil.verify(rawPin, user.getPinHash());
+                if (!user.isActive()) {
+                    throw new AccountLockedException("Account is inactive.");
+                }
+                // Check if account locked
+                if (user.isLocked()) {
 
-        if (!valid) {
+                    auditService.logUserEvent(
+                            conn,
+                            user.getAccountNumber(),
+                            "LOGIN_ATTEMPT_BLOCKED",
+                            "Login attempted on locked account"
+                    );
 
-            int attempts = user.getFailedAttempts() + 1;
-            userDAO.updateFailedAttempts(user.getId(), attempts);
+                    throw new AccountLockedException("Account is locked. Contact bank.");
+                }
 
-            int remaining = MAX_FAILED_ATTEMPTS - attempts;
+                // Verify PIN
+                boolean valid = PasswordUtil.verify(rawPin, user.getPinHash());
 
-            if (attempts >= MAX_FAILED_ATTEMPTS) {
-                userDAO.lockAccount(user.getId());
-                throw new AccountLockedException(
-                        "Account locked due to 3 failed attempts.");
+                if (!valid) {
+
+                    auditService.logUserEvent(
+                                conn,
+                                user.getAccountNumber(),
+                                "LOGIN_FAILED_INVALID_PIN",
+                                "Account login failed due to invalid PIN");
+
+                    int attempts = user.getFailedAttempts() + 1;
+                    userDAO.updateFailedAttempts(conn, user.getAccountNumber(), attempts);
+
+                    int remaining = MAX_FAILED_ATTEMPTS - attempts;
+
+                    if (attempts >= MAX_FAILED_ATTEMPTS) {
+                        userDAO.lockAccount(conn, user.getAccountNumber());
+                        auditService.logUserEvent(
+                                conn,
+                                user.getAccountNumber(),
+                                "ACCOUNT_LOCKED",
+                                "Account locked after multiple failed login attempts"
+                        );
+                        conn.commit();
+
+                        throw new AccountLockedException(
+                                "Account locked due to 3 failed attempts.");
+                    }
+
+                    throw new InvalidCredentialsException(
+                            "Invalid PIN. Remaining attempts: " + remaining);
+                }
+
+                userDAO.updateFailedAttempts(conn, user.getAccountNumber(), 0);
+
+                auditService.logUserEvent(
+                        conn,
+                        user.getAccountNumber(),
+                        "USER_LOGIN_SUCCESS",
+                        "User logged in successfully"
+                );
+                conn.commit();
+
+                return user;
+
+            } catch (Exception e) {
+                conn.rollback();
+                throw e;
             }
 
-            throw new InvalidCredentialsException(
-                    "Invalid PIN. Remaining attempts: " + remaining);
+        } catch (Exception e) {
+            throw new RuntimeException("Authentication failed.", e);
         }
+    }
 
-        userDAO.updateFailedAttempts(user.getId(), 0);
+    public Admin adminLogin(String username, String rawPassword) {
 
-        return user;
+        // Check account existence
+        try (Connection conn = DBConnection.getConnection()) {
+            conn.setAutoCommit(false); 
+
+            try {
+                Admin admin = adminDAO.findByUsername(conn, username);
+
+                if (admin == null) {
+                    throw new InvalidCredentialsException("Invalid username.");
+                }
+
+                if (!admin.isActive()) {
+                    throw new AccountLockedException("Admin account is inactive.");
+                }
+
+                // Verify password
+                boolean valid = PasswordUtil.verify(rawPassword, admin.getPasswordHash());
+
+                if (!valid) {
+                    throw new InvalidCredentialsException("Invalid password. Try again.");
+                }
+
+                auditService.logAdmin(conn, admin.getUsername(), null,"ADMIN_LOGIN_SUCCESS",
+                        "Admin logged in successfully");
+                conn.commit();
+
+                return admin;
+
+            } catch (Exception e) {
+                conn.rollback();
+                throw e;
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Authentication failed.", e);
+        }
     }
 }

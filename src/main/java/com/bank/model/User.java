@@ -9,6 +9,7 @@ public class User {
     private String name;
     private String accountNumber;
     private String pinHash;
+    private boolean active;
     private BigDecimal balance;
     private int failedAttempts;
     private boolean locked;
@@ -17,13 +18,14 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String name, String accountNumber, String pinHash,
+    public User(Long id, String name, String accountNumber, String pinHash, boolean active,
                 BigDecimal balance, int failedAttempts,
                 boolean locked, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.accountNumber = accountNumber;
         this.pinHash = pinHash;
+        this.active = active;
         this.balance = balance;
         this.failedAttempts = failedAttempts;
         this.locked = locked;
@@ -60,6 +62,14 @@ public class User {
 
     public void setPinHash(String pinHash) {
         this.pinHash = pinHash;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public BigDecimal getBalance() {

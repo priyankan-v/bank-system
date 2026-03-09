@@ -8,6 +8,7 @@ public class Admin {
     private String name;
     private String username;
     private String passwordHash;
+    private boolean active;
     private String role;
     private LocalDateTime createdAt;
 
@@ -15,18 +16,27 @@ public class Admin {
     }
 
     public Admin(Long id, String name, String username,
-                 String passwordHash, String role,
+                 String passwordHash, boolean active, String role,
                  LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.username = username;
         this.passwordHash = passwordHash;
+        this.active = active;
         this.role = role;
         this.createdAt = createdAt;
     }
 
     public boolean isSuperAdmin() {
         return "SUPER_ADMIN".equals(role);
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public Long getId() {

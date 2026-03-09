@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public class Transaction {
 
     private Long id;
-    private Long accountId;
+    private String account_number;
     private String type;
     private BigDecimal amount;
     private LocalDateTime createdAt;
@@ -14,11 +14,11 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(Long id, Long accountId,
+    public Transaction(Long id, String account_number,
                        String type, BigDecimal amount,
                        LocalDateTime createdAt) {
         this.id = id;
-        this.accountId = accountId;
+        this.account_number = account_number;
         this.type = type;
         this.amount = amount;
         this.createdAt = createdAt;
@@ -32,12 +32,12 @@ public class Transaction {
         this.id = id;
     }
 
-    public Long getAccountId() {
-        return accountId;
+    public String getAccountNumber() {
+        return account_number;
     }
 
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
+    public void setAccountNumber(String account_number) {
+        this.account_number = account_number;
     }
 
     public String getType() {
