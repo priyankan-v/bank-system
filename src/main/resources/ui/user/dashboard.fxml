@@ -1,10 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml">
+<VBox spacing="20"
+      alignment="CENTER"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.bank.controller.UserDashboardController">
 
-    <Label text="User Dashboard"/>
+    <padding>
+        <Insets top="30" bottom="30" left="30" right="30"/>
+    </padding>
 
-</StackPane>
+    <Label fx:id="welcomeLabel"
+           style="-fx-font-size:22px; -fx-font-weight:bold;" />
+
+    <Label fx:id="accountLabel"
+           style="-fx-font-size:16px;" />
+
+    <Label fx:id="balanceLabel"
+           style="-fx-font-size:18px;" />
+
+    <HBox spacing="15" alignment="CENTER">
+
+        <Button text="Refresh Balance"
+                onAction="#refreshBalance"/>
+
+        <Button text="Withdraw"
+                onAction="#withdrawMoney"/>
+
+        <Button text="Change PIN"
+                onAction="#changePin"/>
+
+        <Button text="Transactions"
+                onAction="#viewTransactions"/>
+
+        <Button text="Logout"
+                onAction="#logout"/>
+
+    </HBox>
+
+</VBox>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER"
+      spacing="15"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.bank.controller.ChangePinController">
+
+    <Label text="Change PIN"
+           style="-fx-font-size:20px"/>
+
+    <PasswordField fx:id="newPinField"
+                   promptText="New PIN"/>
+
+    <Button text="Change PIN"
+            onAction="#changePin"/>
+
+    <Label fx:id="messageLabel"/>
+
+    <Button text="Back"
+            onAction="#back"/>
+
+</VBox>

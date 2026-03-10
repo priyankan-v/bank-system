@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10"
+      alignment="CENTER"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.bank.controller.TransactionsController">
+
+    <Label text="Transaction History"
+           style="-fx-font-size:20px"/>
+
+    <TableView fx:id="table" prefWidth="400">
+
+        <columns>
+
+            <TableColumn fx:id="typeCol"
+                         text="Type"/>
+
+            <TableColumn fx:id="amountCol"
+                         text="Amount"/>
+
+        </columns>
+
+    </TableView>
+
+    <Button text="Back"
+            onAction="#back"/>
+
+</VBox>
