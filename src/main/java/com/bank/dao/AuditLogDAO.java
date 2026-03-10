@@ -55,8 +55,7 @@ public class AuditLogDAO {
 
                 list.add(a);
             }
-
-        return list;
         }
+        return list;
     }
 }

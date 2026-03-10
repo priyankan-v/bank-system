@@ -1,5 +1,4 @@
 package com.bank.service;
-
 import java.sql.Connection;
 
 import com.bank.dao.AdminDAO;
@@ -10,6 +9,7 @@ import com.bank.service.exceptions.AccountLockedException;
 import com.bank.service.exceptions.InvalidCredentialsException;
 import com.bank.util.DBConnection;
 import com.bank.util.PasswordUtil;
+import com.bank.util.SessionManager;
 
 public class AuthService {
 
@@ -19,7 +19,7 @@ public class AuthService {
 
     private static final int MAX_FAILED_ATTEMPTS = 3;
 
-    public User userLogin(String accountNumber, String rawPin) {
+    public User userLogin(String accountNumber, String rawPin) throws InvalidCredentialsException, AccountLockedException {
 
         // Check account existence
         try (Connection conn = DBConnection.getConnection()) {
@@ -50,6 +50,7 @@ public class AuthService {
 
                 // Verify PIN
                 boolean valid = PasswordUtil.verify(rawPin, user.getPinHash());
+                // System.out.println("user.getPinHash(): " + user.getPinHash() + " vs " + rawPin);
 
                 if (!valid) {
 
@@ -90,17 +91,18 @@ public class AuthService {
                         "USER_LOGIN_SUCCESS",
                         "User logged in successfully"
                 );
+                SessionManager.setCurrentUser(user);
                 conn.commit();
 
                 return user;
 
             } catch (Exception e) {
                 conn.rollback();
-                throw e;
+                throw new RuntimeException("Database error during login.", e);
             }
 
         } catch (Exception e) {
-            throw new RuntimeException("Authentication failed.", e);
+            throw new RuntimeException("Unable to connect to the database.", e);
         }
     }
 
@@ -130,6 +132,7 @@ public class AuthService {
 
                 auditService.logAdmin(conn, admin.getUsername(), null,"ADMIN_LOGIN_SUCCESS",
                         "Admin logged in successfully");
+                SessionManager.setCurrentAdmin(admin);
                 conn.commit();
 
                 return admin;

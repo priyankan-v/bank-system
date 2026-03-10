@@ -1,11 +1,8 @@
 package com.bank;
 
-import com.bank.config.FlywayConfig;
+import com.bank.util.SceneManager;
 
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class UserApp extends Application {
@@ -13,14 +10,13 @@ public class UserApp extends Application {
     @Override
     public void start(Stage stage) {
 
-        FlywayConfig.migrate(false);  // true only in development
+        SceneManager.setStage(stage);
 
-        Label label = new Label("User ATM Application");
+        SceneManager.switchScene("user/login.fxml");
 
-        Scene scene = new Scene(new StackPane(label), 800, 600);
-
-        stage.setTitle("Bank System - User App");
-        stage.setScene(scene);
+        stage.setTitle("ATM System");
+        stage.setWidth(800);
+        stage.setHeight(600);
         stage.show();
     }
 

@@ -15,8 +15,8 @@
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javafx.version>21</javafx.version>
-        <!-- <mainClass>com.bank.UserApp</mainClass> -->
-        <mainClass>com.bank.AdminApp</mainClass>
+        <!-- <mainClass>com.bank.AdminApp</mainClass> -->
+        <mainClass>com.bank.UserApp</mainClass>
     </properties>
 
     <dependencies>

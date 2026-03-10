@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" spacing="15"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.bank.controller.UserLoginController">
+
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
+
+    <Label text="ATM Login"
+           style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+    <TextField fx:id="accountNumberField"
+               promptText="Account Number"
+               maxWidth="200"/>
+
+    <PasswordField fx:id="pinField"
+                   promptText="PIN"
+                   maxWidth="200"/>
+
+    <Button text="Login"
+            onAction="#handleLogin"
+            maxWidth="200"/>
+
+    <Label fx:id="messageLabel"
+           textFill="red"/>
+
+</VBox>

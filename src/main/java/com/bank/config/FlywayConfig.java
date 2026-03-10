@@ -6,21 +6,18 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 public class FlywayConfig {
 
-    private static final String DB_NAME = "bank_system";
+    private static final Dotenv dotenv = Dotenv.load();
+    private static final String BASE_URL = dotenv.get("DB_URL");
+    private static final String DB_NAME = dotenv.get("DB_NAME");
+    private static final String USER = dotenv.get("DB_USER");
+    private static final String PASSWORD = dotenv.get("DB_PASSWORD");
 
     public static void migrate(boolean devMode) {
 
-        Dotenv dotenv = Dotenv.load();
-
-        String baseUrl = dotenv.get("DB_URL");   // e.g. jdbc:mysql://localhost:3306/
-        String user = dotenv.get("DB_USER");
-        String password = dotenv.get("DB_PASSWORD");
-
-        // Ensure the DB name is appended
-        String url = baseUrl.endsWith("/") ? baseUrl + DB_NAME : baseUrl + "/" + DB_NAME;
+        String url = BASE_URL.endsWith("/") ? BASE_URL + DB_NAME : BASE_URL + "/" + DB_NAME;
 
         Flyway flyway = Flyway.configure()
-                .dataSource(url, user, password)
+                .dataSource(url, USER, PASSWORD)
                 .cleanDisabled(!devMode)   // allow clean only in dev mode
                 .load();
 
