@@ -2,6 +2,7 @@ package com.bank.service;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.util.List;
 
 import com.bank.dao.TransactionDAO;
 import com.bank.dao.UserDAO;
@@ -222,6 +223,18 @@ public class AccountService {
 
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    // GET TRANSACTIONS
+    public List<Transaction> getTransactions(User user, int limit) {
+
+        try (Connection conn = DBConnection.getConnection()) {
+
+            return transactionDAO.getTransactions(conn, user.getAccountNumber(), limit);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch transactions", e);
         }
     }
 }

@@ -2,10 +2,17 @@ package com.bank.service;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.util.List;
 
 import com.bank.dao.AdminDAO;
+import com.bank.dao.AdminLogDAO;
+import com.bank.dao.AuditLogDAO;
+import com.bank.dao.TransactionDAO;
 import com.bank.dao.UserDAO;
 import com.bank.model.Admin;
+import com.bank.model.AdminLog;
+import com.bank.model.AuditLog;
+import com.bank.model.Transaction;
 import com.bank.model.User;
 import com.bank.util.AccountNumberGenerator;
 import com.bank.util.AdminUsernameGenerator;
@@ -17,6 +24,9 @@ public class AdminService {
 
     private final AdminDAO adminDAO = new AdminDAO();
     private final UserDAO userDAO = new UserDAO();
+    private final AuditLogDAO auditLogDAO = new AuditLogDAO();
+    private final AdminLogDAO adminLogDAO = new AdminLogDAO();
+    private final TransactionDAO transactionDAO = new TransactionDAO();
     private final AuditService auditService = new AuditService();
     private final AccountService accountService = new AccountService();
 
@@ -352,6 +362,40 @@ public class AdminService {
 
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    // GET ACCOUNT TRANSACTIONS
+    public List<Transaction> getAccountTransactions(String accountNumber, int limit) {
+
+        try (Connection conn = DBConnection.getConnection()) {
+
+            return transactionDAO.getTransactions(conn, accountNumber, limit);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch transactions", e);
+        }
+    }
+
+    // GET AUDIT LOGS
+    public List<AuditLog> getUserAuditLogs(String accountNumber, int limit) {
+        try (Connection conn = DBConnection.getConnection()) {
+
+            return auditLogDAO.getUserAudit(conn, accountNumber, limit);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch audit logs", e);
+        }
+    }
+
+    // GET ADMIN AUDIT LOGS
+    public List<AdminLog> getAdminAuditLogs(String username, int limit) {
+        try (Connection conn = DBConnection.getConnection()) {
+
+            return adminLogDAO.getAdminAudit(conn, username, limit);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch admin audit logs", e);
         }
     }
 }
