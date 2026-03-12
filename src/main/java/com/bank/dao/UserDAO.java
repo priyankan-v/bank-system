@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import com.bank.model.User;
+import com.bank.util.PasswordUtil;
 
 public class UserDAO {
 
@@ -80,7 +81,9 @@ public class UserDAO {
     }
     
     //  UPDATE PIN 
-    public void updatePin(Connection conn, String accountNumber, String newPinHash) throws SQLException {
+    public void updatePin(Connection conn, String accountNumber, String newPin) throws SQLException {
+
+        String newPinHash = PasswordUtil.hash(newPin);
 
         String sql = "UPDATE users SET pin_hash = ? WHERE account_number = ? AND active = TRUE";
 
@@ -91,6 +94,27 @@ public class UserDAO {
 
             stmt.executeUpdate();
 
+        }
+    }
+
+    public boolean verifyPin(Connection conn, String accountNumber, String rawPin) throws SQLException {
+
+        String sql = "SELECT pin_hash FROM users WHERE account_number = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, accountNumber);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+
+                String storedHash = rs.getString("pin_hash");
+
+                return PasswordUtil.verify(rawPin, storedHash); // BCrypt check
+            }
+
+            return false;
         }
     }
 

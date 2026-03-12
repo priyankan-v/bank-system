@@ -6,6 +6,8 @@ import com.bank.dao.UserDAO;
 import com.bank.model.Admin;
 import com.bank.model.User;
 import com.bank.service.exceptions.AccountLockedException;
+import com.bank.service.exceptions.AuthException;
+import com.bank.service.exceptions.DeletedAccountException;
 import com.bank.service.exceptions.InvalidCredentialsException;
 import com.bank.util.DBConnection;
 import com.bank.util.PasswordUtil;
@@ -19,7 +21,7 @@ public class AuthService {
 
     private static final int MAX_FAILED_ATTEMPTS = 3;
 
-    public User userLogin(String accountNumber, String rawPin) throws InvalidCredentialsException, AccountLockedException {
+    public User userLogin(String accountNumber, String rawPin) throws InvalidCredentialsException, AccountLockedException, DeletedAccountException {
 
         // Check account existence
         try (Connection conn = DBConnection.getConnection()) {
@@ -33,7 +35,7 @@ public class AuthService {
                 }
 
                 if (!user.isActive()) {
-                    throw new AccountLockedException("Account is inactive.");
+                    throw new DeletedAccountException("Account is inactive.");
                 }
                 // Check if account locked
                 if (user.isLocked()) {
@@ -61,9 +63,13 @@ public class AuthService {
                                 "Account login failed due to invalid PIN");
 
                     int attempts = user.getFailedAttempts() + 1;
+
                     userDAO.updateFailedAttempts(conn, user.getAccountNumber(), attempts);
+                    user.setFailedAttempts(attempts);
 
                     int remaining = MAX_FAILED_ATTEMPTS - attempts;
+
+                    conn.commit();
 
                     if (attempts >= MAX_FAILED_ATTEMPTS) {
                         userDAO.lockAccount(conn, user.getAccountNumber());
@@ -96,11 +102,19 @@ public class AuthService {
 
                 return user;
 
-            } catch (Exception e) {
-                conn.rollback();
-                throw new RuntimeException("Database error during login.", e);
+            } catch (AuthException e) {
+
+                try {
+                    conn.rollback();
+                } catch (Exception rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+
+                throw e;
             }
 
+        } catch (AuthException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException("Unable to connect to the database.", e);
         }
@@ -138,7 +152,11 @@ public class AuthService {
                 return admin;
 
             } catch (Exception e) {
-                conn.rollback();
+                try {
+                    conn.rollback();
+                } catch (Exception rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
                 throw e;
             }
 
