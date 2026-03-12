@@ -1,6 +1,7 @@
 package com.bank.controller;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
 
 import com.bank.model.User;
 import com.bank.service.AccountService;
@@ -28,10 +29,27 @@ public class UserDashboardController {
 
         User user = SessionManager.getCurrentUser();
 
-        welcomeLabel.setText("Welcome " + user.getName());
+        String greeting = getTimeBasedGreeting();
+        welcomeLabel.setText(greeting + ", " + user.getName());
+
         accountLabel.setText("Account: " + user.getAccountNumber());
 
         refreshBalance();
+    }
+
+    private String getTimeBasedGreeting() {
+        LocalTime now = LocalTime.now();
+        int hour = now.getHour();
+
+        if (hour >= 5 && hour < 12) {
+            return "Good Morning";
+        } else if (hour >= 12 && hour < 17) {
+            return "Good Afternoon";
+        } else if (hour >= 17 && hour < 21) {
+            return "Good Evening";
+        } else {
+            return "Welcome";
+        }
     }
 
     @FXML
@@ -57,6 +75,11 @@ public class UserDashboardController {
     @FXML
     private void viewTransactions() {
         SceneManager.switchScene("user/transactions.fxml");
+    }
+
+    @FXML
+    public void depositMoney() {
+        SceneManager.switchScene("user/deposit.fxml");
     }
 
     @FXML

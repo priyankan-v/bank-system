@@ -13,9 +13,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.util.Duration;
 
-public class WithdrawController {
-
-    @FXML
+public class UserDepositController {
+   @FXML
     private TextField amountField;
 
     @FXML
@@ -24,7 +23,7 @@ public class WithdrawController {
     private final AccountService accountService = new AccountService();
 
     @FXML
-    private void withdraw() {
+    private void deposit() {
 
         try {
 
@@ -32,9 +31,9 @@ public class WithdrawController {
 
             User user = SessionManager.getCurrentUser();
 
-            accountService.withdraw(user, amount);
+            accountService.deposit(user, amount);
 
-            messageLabel.setText("Withdrawal successful");
+            messageLabel.setText("Deposit successful");
 
             // Wait 1 second, then go back to dashboard
             PauseTransition pause = new PauseTransition(Duration.seconds(1));

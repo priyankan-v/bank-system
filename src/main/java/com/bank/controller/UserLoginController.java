@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 
 public class UserLoginController {
 
@@ -22,6 +23,26 @@ public class UserLoginController {
     private Label messageLabel;
 
     private final AuthService authService = new AuthService();
+
+    @FXML
+    public void initialize() {
+
+        // Limit account number to 8 digits only
+        accountNumberField.setTextFormatter(new TextFormatter<>(change -> {
+            if (change.getControlNewText().matches("\\d{0,8}")) {
+                return change;
+            }
+            return null;
+        }));
+
+        // Limit PIN to 4 digits only
+        pinField.setTextFormatter(new TextFormatter<>(change -> {
+            if (change.getControlNewText().matches("\\d{0,4}")) {
+                return change;
+            }
+            return null;
+        }));
+    }
 
     @FXML
     private void handleLogin() {

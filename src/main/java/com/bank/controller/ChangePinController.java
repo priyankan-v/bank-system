@@ -9,6 +9,7 @@ import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextFormatter;
 import javafx.util.Duration;
 
 public class ChangePinController {
@@ -26,6 +27,34 @@ public class ChangePinController {
     private Label messageLabel;
 
     private final AccountService accountService = new AccountService();
+
+        @FXML
+    public void initialize() {
+
+        // Limit account number to 8 digits only
+        oldPinField.setTextFormatter(new TextFormatter<>(change -> {
+            if (change.getControlNewText().matches("\\d{0,4}")) {
+                return change;
+            }
+            return null;
+        }));
+
+        // Limit PIN to 4 digits only
+        newPinField.setTextFormatter(new TextFormatter<>(change -> {
+            if (change.getControlNewText().matches("\\d{0,4}")) {
+                return change;
+            }
+            return null;
+        }));
+
+        // Limit confirm PIN to 4 digits only
+        confirmPinField.setTextFormatter(new TextFormatter<>(change -> {
+            if (change.getControlNewText().matches("\\d{0,4}")) {
+                return change;
+            }
+            return null;
+        }));
+    }
 
     @FXML
     private void changePin() {
