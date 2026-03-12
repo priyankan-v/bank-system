@@ -88,8 +88,7 @@ public class AccountService {
         }
     }
 
-    //  CHANGE PIN 
-    public void changePin(User user, String newHashedPin) {
+    public void changePin(User user, String oldPin, String newPin) {
 
         validateActiveUser(user);
 
@@ -98,8 +97,16 @@ public class AccountService {
             conn.setAutoCommit(false);
 
             try {
+
+                // Verify old PIN
+                boolean valid = userDAO.verifyPin(conn, user.getAccountNumber(), oldPin);
+
+                if (!valid) {
+                    throw new RuntimeException("Incorrect current PIN");
+                }
+
                 // Update PIN
-                userDAO.updatePin(conn, user.getAccountNumber(), newHashedPin);
+                userDAO.updatePin(conn, user.getAccountNumber(), newPin);
 
                 // Audit log
                 auditService.logUserEvent(
@@ -111,13 +118,13 @@ public class AccountService {
 
                 conn.commit();
 
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 conn.rollback();
-                throw new RuntimeException("PIN change failed. Rolled back.", e);
+                throw e;
             }
 
         } catch (Exception e) {
-            throw new RuntimeException("Database error during PIN change.", e);
+            throw new RuntimeException("PIN change failed. Rolled back.", e);
         }
     }
 

@@ -12,7 +12,8 @@
            style="-fx-font-size:20px"/>
 
     <TextField fx:id="amountField"
-               promptText="Enter amount"/>
+               promptText="Enter amount"
+               maxWidth="200"/>
 
     <Button text="Withdraw"
             onAction="#withdraw"/>
