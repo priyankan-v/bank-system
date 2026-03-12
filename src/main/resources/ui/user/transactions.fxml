@@ -3,29 +3,49 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="10"
+<VBox spacing="12"
       alignment="CENTER"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.bank.controller.TransactionsController">
 
     <Label text="Transaction History"
-           style="-fx-font-size:20px"/>
+           style="-fx-font-size:20px; -fx-font-weight:bold;"/>
 
-    <TableView fx:id="table" prefWidth="400">
+    <HBox spacing="8" alignment="CENTER">
+        <Label text="Show:"/>
+        <ComboBox fx:id="limitSelector" prefWidth="90"/>
+    </HBox>
 
-        <columns>
+    <!-- Prevent table from expanding full width -->
+    <StackPane maxWidth="500">
 
-            <TableColumn fx:id="typeCol"
-                         text="Type"/>
+        <TableView fx:id="table"
+                   prefWidth="500"
+                   maxWidth="500"
+                   prefHeight="380">
 
-            <TableColumn fx:id="amountCol"
-                         text="Amount"/>
+            <columns>
 
-        </columns>
+                <TableColumn fx:id="dateCol"
+                             text="Date"
+                             prefWidth="200"/>
 
-    </TableView>
+                <TableColumn fx:id="typeCol"
+                             text="Type"
+                             prefWidth="120"/>
+
+                <TableColumn fx:id="amountCol"
+                             text="Amount"
+                             prefWidth="180"/>
+
+            </columns>
+
+        </TableView>
+
+    </StackPane>
 
     <Button text="Back"
-            onAction="#back"/>
+            onAction="#back"
+            prefWidth="120"/>
 
 </VBox>

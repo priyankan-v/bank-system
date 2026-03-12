@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -12,7 +13,8 @@
     <Label text="Change PIN"
            style="-fx-font-size:20px"
            GridPane.columnSpan="2"
-           GridPane.rowIndex="0"/>
+           GridPane.rowIndex="0"
+           GridPane.halignment="CENTER"/>
 
     <Label text="Enter Current PIN :" GridPane.rowIndex="1"/>
     <PasswordField fx:id="oldPinField"
@@ -32,15 +34,18 @@
     <Button text="Change PIN"
             onAction="#changePin"
             GridPane.columnSpan="2"
-            GridPane.rowIndex="4"/>
+            GridPane.rowIndex="4"
+            GridPane.halignment="CENTER"/>
 
     <Label fx:id="messageLabel"
            GridPane.columnSpan="2"
-           GridPane.rowIndex="5"/>
+           GridPane.rowIndex="5"
+           GridPane.halignment="CENTER"/>
 
     <Button text="Back"
             onAction="#back"
             GridPane.columnSpan="2"
-            GridPane.rowIndex="6"/>
+            GridPane.rowIndex="6"
+            GridPane.halignment="CENTER"/>
 
 </GridPane>

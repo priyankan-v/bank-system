@@ -6,17 +6,17 @@
 <VBox alignment="CENTER"
       spacing="15"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.bank.controller.WithdrawController">
+      fx:controller="com.bank.controller.UserDepositController">
 
-    <Label text="Enter Withdraw Amount"
+    <Label text="Enter Deposit Amount"
            style="-fx-font-size:20px"/>
 
     <TextField fx:id="amountField"
                promptText="Enter amount"
                maxWidth="200"/>
 
-    <Button text="Withdraw"
-            onAction="#withdraw"/>
+    <Button text="Deposit"
+            onAction="#deposit"/>
 
     <Label fx:id="messageLabel"
            textFill="red"/>

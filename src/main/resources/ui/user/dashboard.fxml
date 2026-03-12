@@ -22,23 +22,47 @@
     <Label fx:id="balanceLabel"
            style="-fx-font-size:18px;" />
 
-    <HBox spacing="15" alignment="CENTER">
+    <GridPane hgap="40" vgap="15" alignment="CENTER">
 
+        <!-- Row 1 -->
         <Button text="Refresh Balance"
-                onAction="#refreshBalance"/>
-
-        <Button text="Withdraw"
-                onAction="#withdrawMoney"/>
+                onAction="#refreshBalance"
+                prefWidth="150"
+                GridPane.columnIndex="0"
+                GridPane.rowIndex="0"/>
 
         <Button text="Change PIN"
-                onAction="#changePin"/>
+                onAction="#changePin"
+                prefWidth="150"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="0"/>
+
+        <!-- Row 2 -->
+        <Button text="Deposit Money"
+                onAction="#depositMoney"
+                prefWidth="150"
+                GridPane.columnIndex="0"
+                GridPane.rowIndex="1"/>
 
         <Button text="Transactions"
-                onAction="#viewTransactions"/>
+                onAction="#viewTransactions"
+                prefWidth="150"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="1"/>
+
+        <!-- Row 3 -->
+        <Button text="Withdraw Money"
+                onAction="#withdrawMoney"
+                prefWidth="150"
+                GridPane.columnIndex="0"
+                GridPane.rowIndex="2"/>
 
         <Button text="Logout"
-                onAction="#logout"/>
+                onAction="#logout"
+                prefWidth="150"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="2"/>
 
-    </HBox>
+    </GridPane>
 
 </VBox>

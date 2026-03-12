@@ -4,30 +4,50 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="15"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.bank.controller.UserLoginController">
+<GridPane alignment="CENTER"
+          hgap="10"
+          vgap="15"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.bank.controller.UserLoginController">
 
     <padding>
         <Insets top="40" right="40" bottom="40" left="40"/>
     </padding>
 
     <Label text="ATM Login"
-           style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+           style="-fx-font-size:20px"
+           GridPane.columnSpan="2"
+           GridPane.rowIndex="0"
+           GridPane.halignment="CENTER"/>
 
+    <Region GridPane.rowIndex="1" minHeight="10"/>
+
+    <Label text="Enter Account Number :" GridPane.rowIndex="2"/>
     <TextField fx:id="accountNumberField"
                promptText="Account Number"
-               maxWidth="200"/>
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="2"/>
 
+    <Label text="Enter PIN :" GridPane.rowIndex="3"/>
     <PasswordField fx:id="pinField"
                    promptText="PIN"
-                   maxWidth="200"/>
+                   GridPane.columnIndex="1"
+                   GridPane.rowIndex="3"/>
+
+    <Region GridPane.rowIndex="4" minHeight="10"/>
 
     <Button text="Login"
             onAction="#handleLogin"
-            maxWidth="200"/>
+            GridPane.columnSpan="2"
+            GridPane.rowIndex="5"
+            GridPane.halignment="CENTER"/>
+
+    <Region GridPane.rowIndex="6" minHeight="10"/>
 
     <Label fx:id="messageLabel"
-           textFill="red"/>
+           textFill="red"
+           GridPane.columnSpan="2"
+           GridPane.rowIndex="7"
+           GridPane.halignment="CENTER"/>
 
-</VBox>
+</GridPane>
