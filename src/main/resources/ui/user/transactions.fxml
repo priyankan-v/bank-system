@@ -16,36 +16,17 @@
         <ComboBox fx:id="limitSelector" prefWidth="90"/>
     </HBox>
 
-    <!-- Prevent table from expanding full width -->
-    <StackPane maxWidth="500">
-
-        <TableView fx:id="table"
-                   prefWidth="500"
-                   maxWidth="500"
-                   prefHeight="380">
-
+    <StackPane maxWidth="550">
+        <TableView fx:id="table" prefWidth="550" prefHeight="380" maxWidth="550">
             <columns>
-
-                <TableColumn fx:id="dateCol"
-                             text="Date"
-                             prefWidth="200"/>
-
-                <TableColumn fx:id="typeCol"
-                             text="Type"
-                             prefWidth="120"/>
-
-                <TableColumn fx:id="amountCol"
-                             text="Amount"
-                             prefWidth="180"/>
-
+                <TableColumn fx:id="dateCol" text="Date" prefWidth="180"/>
+                <TableColumn fx:id="typeCol" text="Type" prefWidth="100"/>
+                <TableColumn fx:id="amountCol" text="Amount" prefWidth="120"/>
+                <TableColumn fx:id="balanceCol" text="Balance" prefWidth="150"/>
             </columns>
-
         </TableView>
-
     </StackPane>
 
-    <Button text="Back"
-            onAction="#back"
-            prefWidth="120"/>
+    <Button text="Back" onAction="#back" prefWidth="120"/>
 
 </VBox>

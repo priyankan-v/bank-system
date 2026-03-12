@@ -63,6 +63,7 @@ public class AccountService {
                 transaction.setAccountNumber(user.getAccountNumber());
                 transaction.setType("WITHDRAW");
                 transaction.setAmount(amount);
+                transaction.setBalanceAfter(newBalance);
 
                 transactionDAO.save(conn, transaction);
 
@@ -117,6 +118,7 @@ public class AccountService {
                 transaction.setAccountNumber(user.getAccountNumber());
                 transaction.setType("DEPOSIT");
                 transaction.setAmount(amount);
+                transaction.setBalanceAfter(newBalance);
 
                 transactionDAO.save(conn, transaction);
 
@@ -207,6 +209,7 @@ public class AccountService {
                 transaction.setAccountNumber(user.getAccountNumber());
                 transaction.setType("ADMIN_DEPOSIT");
                 transaction.setAmount(amount);
+                transaction.setBalanceAfter(newBalance);
 
                 transactionDAO.save(conn, transaction);
 
@@ -261,7 +264,7 @@ public class AccountService {
                 transaction.setAccountNumber(user.getAccountNumber());
                 transaction.setType("ADMIN_WITHDRAW");
                 transaction.setAmount(amount);
-
+                transaction.setBalanceAfter(newBalance);
                 transactionDAO.save(conn, transaction);
 
                 auditService.logAdminEvent(

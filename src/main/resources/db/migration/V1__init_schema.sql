@@ -28,6 +28,7 @@ CREATE TABLE transactions (
     account_number VARCHAR(8) NOT NULL,
     type ENUM('DEPOSIT', 'WITHDRAW', 'ADMIN_DEPOSIT', 'ADMIN_WITHDRAW') NOT NULL,
     amount DECIMAL(15,2),
+    balance_after DECIMAL(15,2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (account_number) REFERENCES users(account_number)
 );

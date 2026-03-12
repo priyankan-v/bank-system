@@ -34,10 +34,12 @@ public class TransactionsController {
     private TableColumn<Transaction, BigDecimal> amountCol;
 
     @FXML
+    private TableColumn<Transaction, BigDecimal> balanceCol;
+
+    @FXML
     private ComboBox<String> limitSelector;
 
     private final AccountService accountService = new AccountService();
-
     private User user;
 
     private final DateTimeFormatter formatter =
@@ -49,90 +51,81 @@ public class TransactionsController {
         user = SessionManager.getCurrentUser();
 
         /* Bind columns */
-
         dateCol.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
         typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
         amountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
+        balanceCol.setCellValueFactory(new PropertyValueFactory<>("balanceAfter"));
 
-        /* Format date */
-
+        /* Format Date column */
         dateCol.setCellFactory(col -> new TableCell<>() {
-
             @Override
             protected void updateItem(LocalDateTime item, boolean empty) {
-
                 super.updateItem(item, empty);
-
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(formatter.format(item));
-                }
+                setText((empty || item == null) ? null : formatter.format(item));
             }
         });
 
-        /* Format amount + color */
+        /* Format Type column (center) */
+        typeCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String type, boolean empty) {
+                super.updateItem(type, empty);
+                setText(empty ? null : type);
+                setStyle("-fx-alignment: CENTER;");
+            }
+        });
 
+        /* Format Amount column (right, color-coded) */
         amountCol.setCellFactory(col -> new TableCell<>() {
-
             @Override
             protected void updateItem(BigDecimal amount, boolean empty) {
-
                 super.updateItem(amount, empty);
-
                 if (empty || amount == null) {
                     setText(null);
                     setStyle("");
                     return;
                 }
-
-                Transaction transaction =
-                        getTableView().getItems().get(getIndex());
-
+                Transaction transaction = getTableView().getItems().get(getIndex());
                 setText(String.format("Rs. %,.2f", amount));
-
+                String color = "";
                 if ("DEPOSIT".equalsIgnoreCase(transaction.getType())) {
-                    setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
-                } 
-                else if ("WITHDRAW".equalsIgnoreCase(transaction.getType())) {
-                    setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
-                } 
-                else {
+                    color = "green";
+                } else if ("WITHDRAW".equalsIgnoreCase(transaction.getType())) {
+                    color = "red";
+                }
+                setStyle(String.format("-fx-text-fill: %s; -fx-font-weight: bold; -fx-alignment: CENTER-RIGHT;", color));
+            }
+        });
+
+        /* Format Balance column (right) */
+        balanceCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(BigDecimal balance, boolean empty) {
+                super.updateItem(balance, empty);
+                if (empty || balance == null) {
+                    setText(null);
                     setStyle("");
+                } else {
+                    setText(String.format("Rs. %,.2f", balance));
+                    setStyle("-fx-alignment: CENTER-RIGHT;");
                 }
             }
         });
 
-        /* ComboBox options */
-
-        limitSelector.setItems(FXCollections.observableArrayList(
-                "10",
-                "20",
-                "40",
-                "All"
-        ));
-
+        /* Transaction limit ComboBox */
+        limitSelector.setItems(FXCollections.observableArrayList("10", "20", "40", "All"));
         limitSelector.setValue("10");
 
         loadTransactions(10);
 
         limitSelector.setOnAction(e -> {
-
             String value = limitSelector.getValue();
-
-            if ("All".equals(value)) {
-                loadTransactions(Integer.MAX_VALUE);
-            } else {
-                loadTransactions(Integer.parseInt(value));
-            }
+            loadTransactions("All".equals(value) ? Integer.MAX_VALUE : Integer.parseInt(value));
         });
     }
 
     private void loadTransactions(int limit) {
-
-        List<Transaction> transactions =
-                accountService.getTransactions(user, limit);
-
+        List<Transaction> transactions = accountService.getTransactions(user, limit);
         table.setItems(FXCollections.observableArrayList(transactions));
     }
 
