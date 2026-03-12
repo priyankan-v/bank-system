@@ -88,6 +88,60 @@ public class AccountService {
         }
     }
 
+    //  DEPOSIT
+    public void deposit(User user, BigDecimal amount) {
+
+        validateActiveUser(user);
+
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Invalid deposit amount.");
+        }
+
+        if (user.isLocked()) {
+            throw new RuntimeException("Account is locked.");
+        }
+
+        BigDecimal newBalance = user.getBalance().add(amount);
+
+        try (Connection conn = DBConnection.getConnection()) {
+
+            conn.setAutoCommit(false);
+
+            try {
+
+                // Update balance
+                userDAO.updateBalance(conn, user.getAccountNumber(), newBalance);
+
+                // Log transaction
+                Transaction transaction = new Transaction();
+                transaction.setAccountNumber(user.getAccountNumber());
+                transaction.setType("DEPOSIT");
+                transaction.setAmount(amount);
+
+                transactionDAO.save(conn, transaction);
+
+                // Audit log
+                auditService.logUserEvent(
+                        conn,
+                        user.getAccountNumber(),
+                        "DEPOSIT",
+                        "User deposited " + amount
+                );
+
+                conn.commit();
+
+                user.setBalance(newBalance);
+
+            } catch (Exception e) {
+                conn.rollback();
+                throw new RuntimeException("Transaction failed. Rolled back.", e);
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Database error during deposit.", e);
+        }
+    }
+
     public void changePin(User user, String oldPin, String newPin) {
 
         validateActiveUser(user);
