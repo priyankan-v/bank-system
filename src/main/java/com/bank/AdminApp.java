@@ -11,12 +11,14 @@ public class AdminApp extends Application {
     public void start(Stage stage) {
 
         SceneManager.setStage(stage);
-
         SceneManager.switchScene("admin/login.fxml");
 
         stage.setTitle("Bank Admin System");
-        stage.setWidth(1000);
-        stage.setHeight(650);
+        stage.setWidth(800);
+        stage.setHeight(600);
+
+        stage.centerOnScreen();   // centers the window
+
         stage.show();
     }
 

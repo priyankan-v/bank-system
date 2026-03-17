@@ -111,26 +111,9 @@ public class AdminLoginController {
 
             messageLabel.setText("System error. Please try again.");
 
+            usernameField.clear();
             passwordField.clear();
-            passwordField.requestFocus();
-        }
-    }
-
-    @FXML
-    private void login() {
-
-        try {
-
-            Admin admin = authService.adminLogin(
-                    usernameField.getText(),
-                    passwordField.getText()
-            );
-
-            SceneManager.switchScene("admin/dashboard.fxml");
-
-        } catch (Exception e) {
-
-            messageLabel.setText(e.getMessage());
+            usernameField.requestFocus();
         }
     }
 }

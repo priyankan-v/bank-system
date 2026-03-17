@@ -13,7 +13,7 @@ public class UserApp extends Application {
         SceneManager.setStage(stage);
         SceneManager.switchScene("user/login.fxml");
 
-        stage.setTitle("ATM System");
+        stage.setTitle("Bank User System");
         stage.setWidth(800);
         stage.setHeight(600);
 

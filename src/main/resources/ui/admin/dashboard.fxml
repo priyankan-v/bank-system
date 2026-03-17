@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="25" alignment="CENTER"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.bank.controller.AdminDashboardController">
+
+    <!-- Padding -->
+    <padding>
+        <Insets top="30" bottom="30" left="30" right="30"/>
+    </padding>
+
+    <HBox spacing="10" alignment="CENTER">
+
+        <Label fx:id="welcomeLabel"
+               style="-fx-font-size:22px; -fx-font-weight:bold;" />
+
+        <Label fx:id="roleBadge"
+               visible="false"
+               style="
+                   -fx-background-color: gold;
+                   -fx-text-fill: black;
+                   -fx-font-size: 11px;
+                   -fx-padding: 3 8 3 8;
+                   -fx-background-radius: 10;
+                   -fx-font-weight: bold;
+               "/>
+
+    </HBox>
+
+    <HBox spacing="100" alignment="CENTER">
+
+        <!-- ================= LEFT SIDE ================= -->
+        <!-- Admin Operations -->
+        <VBox spacing="12" alignment="TOP_CENTER" prefWidth="220">
+
+            <Label text="Admin Operations"
+                   style="-fx-font-size:18px; -fx-font-weight:bold;" />
+
+            <Button text="Change Password"
+                    onAction="#changePassword"
+                    prefWidth="180" prefHeight="40"
+                    maxWidth="Infinity"
+                    alignment="CENTER"/>
+
+            <Button text="View Activity"
+                    onAction="#viewActivity"
+                    prefWidth="180" prefHeight="40"
+                    maxWidth="Infinity"
+                    alignment="CENTER"/>
+
+            <!-- SUPER ADMIN ONLY -->
+            <VBox fx:id="superAdminSection"
+                  spacing="10"
+                  alignment="TOP_CENTER">
+
+                <!-- <Label text="Admin Management"
+                       style="-fx-font-weight:bold;" /> -->
+
+                <Button text="Add Admin"
+                        onAction="#addAdmin"
+                        prefWidth="180" prefHeight="40"/>
+
+                <Button text="Delete Admin"
+                        onAction="#deleteAdmin"
+                        prefWidth="180" prefHeight="40"/>
+
+                <Button text="Promote Admin"
+                        onAction="#promoteAdmin"
+                        prefWidth="180" prefHeight="40"/>
+
+                <Button text="Demote Admin"
+                        onAction="#demoteAdmin"
+                        prefWidth="180" prefHeight="40"/>
+
+            </VBox>
+
+        </VBox>
+
+        <!-- ================= RIGHT SIDE ================= -->
+        <!-- Account Operations -->
+        <VBox spacing="12" alignment="TOP_CENTER" prefWidth="220">
+
+            <Label text="Account Operations"
+                   style="-fx-font-size:18px; -fx-font-weight:bold;" />
+
+            <!-- 🔹 Account Number Field + Check -->
+            
+            <Button text="Add Account"
+                    onAction="#addAccount"
+                    prefWidth="190" prefHeight="40"/>
+
+            <Region prefHeight="3"/>
+
+            <HBox spacing="8" alignment="CENTER">
+                <TextField fx:id="accountNumberField"
+                           promptText="Account Number"
+                           prefWidth="120"/>
+                <Button text="Check"
+                        onAction="#checkAccount"
+                        prefWidth="60" prefHeight="30"/>
+            </HBox>
+
+        </VBox>
+
+    </HBox>
+
+    <!-- Logout -->
+    <Region prefHeight="10"/>
+    <Button text="Logout"
+            onAction="#logout"
+            prefWidth="150"
+            prefHeight="40"/>
+            <!-- style="-fx-background-color:red; -fx-text-fill:white;" /> -->
+
+</VBox>

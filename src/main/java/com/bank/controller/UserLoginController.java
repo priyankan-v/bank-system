@@ -118,8 +118,9 @@ public class UserLoginController {
 
             messageLabel.setText("System error. Please try again.");
 
+            accountNumberField.clear();
             pinField.clear();
-            pinField.requestFocus();
+            accountNumberField.requestFocus();
         }
     }
 }

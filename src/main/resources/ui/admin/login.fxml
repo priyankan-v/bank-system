@@ -8,13 +8,13 @@
           hgap="10"
           vgap="15"
           xmlns:fx="http://javafx.com/fxml"
-          fx:controller="com.bank.controller.UserLoginController">
+          fx:controller="com.bank.controller.AdminLoginController">
 
     <padding>
         <Insets top="40" right="40" bottom="40" left="40"/>
     </padding>
 
-    <Label text=" User Login"
+    <Label text="Admin Login"
            style="-fx-font-size:20px"
            GridPane.columnSpan="2"
            GridPane.rowIndex="0"
@@ -22,15 +22,15 @@
 
     <Region GridPane.rowIndex="1" minHeight="10"/>
 
-    <Label text="Enter Account Number :" GridPane.rowIndex="2"/>
-    <TextField fx:id="accountNumberField"
-               promptText="Account Number"
+    <Label text="Enter Username :" GridPane.rowIndex="2"/>
+    <TextField fx:id="usernameField"
+               promptText="Username"
                GridPane.columnIndex="1"
                GridPane.rowIndex="2"/>
 
-    <Label text="Enter PIN :" GridPane.rowIndex="3"/>
-    <PasswordField fx:id="pinField"
-                   promptText="PIN"
+    <Label text="Enter Password :" GridPane.rowIndex="3"/>
+    <PasswordField fx:id="passwordField"
+                   promptText="Password"
                    GridPane.columnIndex="1"
                    GridPane.rowIndex="3"/>
 

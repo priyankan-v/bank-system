@@ -120,6 +120,8 @@ public class AuthService {
         }
     }
 
+
+    
     public Admin adminLogin(String username, String rawPassword) {
 
         // Check account existence
@@ -134,24 +136,28 @@ public class AuthService {
                 }
 
                 if (!admin.isActive()) {
-                    throw new AccountLockedException("Admin account is inactive.");
+                    throw new DeletedAccountException("Admin account is inactive.");
                 }
 
                 // Verify password
                 boolean valid = PasswordUtil.verify(rawPassword, admin.getPasswordHash());
 
                 if (!valid) {
+                    auditService.logAdmin(conn, admin.getUsername(), null,"ADMIN_LOGIN_FAILED",
+                        "Admin login failed due to invalid password");
+
                     throw new InvalidCredentialsException("Invalid password. Try again.");
                 }
 
                 auditService.logAdmin(conn, admin.getUsername(), null,"ADMIN_LOGIN_SUCCESS",
                         "Admin logged in successfully");
+                        
                 SessionManager.setCurrentAdmin(admin);
                 conn.commit();
 
                 return admin;
 
-            } catch (Exception e) {
+            } catch (AuthException e) {
                 try {
                     conn.rollback();
                 } catch (Exception rollbackEx) {
@@ -160,8 +166,10 @@ public class AuthService {
                 throw e;
             }
 
+        } catch (AuthException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Authentication failed.", e);
+            throw new RuntimeException("Unable to connect to the database.", e);
         }
     }
 }
