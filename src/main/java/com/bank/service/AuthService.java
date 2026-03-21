@@ -176,12 +176,15 @@ public class AuthService {
     // For admin logout, we just log the event.
     public void adminLogout(String username) {
         try (Connection conn = DBConnection.getConnection()) {
+            conn.setAutoCommit(false); 
+
             auditService.logAdmin(conn, 
                 username, 
                 null, 
                 "ADMIN_LOGOUT", 
                 "Admin logged out successfully");
             conn.commit();
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
