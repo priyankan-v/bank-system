@@ -1,0 +1,35 @@
+/* Delete button */
+#deleteBtn {
+    -fx-background-color: #e14251;
+    -fx-text-fill: black;
+    -fx-font-size: 11;
+    -fx-background-radius: 3;
+}
+
+#deleteBtn:hover {
+    -fx-background-color: #c9304c; /* slightly darker red on hover */
+}
+
+/* Promote button */
+#promoteBtn {
+    -fx-background-color: #3fb95c;
+    -fx-text-fill: black;
+    -fx-font-size: 11;
+    -fx-background-radius: 3;
+}
+
+#promoteBtn:hover {
+    -fx-background-color: #37a25b; /* slightly darker green on hover */
+}
+
+/* Demote button */
+#demoteBtn {
+    -fx-background-color: #ffc107;
+    -fx-text-fill: black;
+    -fx-font-size: 11;
+    -fx-background-radius: 3;
+}
+
+#demoteBtn:hover {
+    -fx-background-color: #e0a800; /* slightly darker yellow on hover */
+}

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="15" alignment="TOP_CENTER" prefWidth="450" style="-fx-padding: 20;"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.bank.controller.TargetAdminDashboardController"
+      stylesheets="@target-button.css">
+
+    <!-- TITLE -->
+    <Label text="Admin Details" style="-fx-font-size: 18; -fx-font-weight: bold;" alignment="CENTER"/>
+
+    <!-- ERROR MESSAGE -->
+    <VBox fx:id="errorBox" 
+       spacing="8" 
+       alignment="CENTER" 
+       visible="false" 
+       managed="false"
+       maxWidth="350"
+       style="-fx-padding: 10; -fx-border-color: #ff6b6b; -fx-background-color: #ffe0e0; -fx-border-radius: 5; -fx-background-radius: 5;">
+        <Label fx:id="errorLabel"
+               style="-fx-font-weight: bold; -fx-text-fill: #d9534f;" 
+               alignment="CENTER"
+               wrapText="true"/>
+    </VBox>
+
+    <!-- ADMIN DETAILS SECTION -->
+    <VBox fx:id="detailsBox"
+       spacing="12" 
+       alignment="CENTER" 
+       visible="false" 
+       managed="false"
+       maxWidth="380"
+       style="-fx-padding: 15; -fx-border-color: #5cb85c; -fx-background-color: #e8f5e9; -fx-border-radius: 5; -fx-background-radius: 5;">
+
+        <Label text="Admin Found" 
+               style="-fx-font-weight: bold; -fx-text-fill: #27ae60; -fx-font-size: 13;" 
+               alignment="CENTER"/>
+
+        <Separator/>
+
+        <HBox spacing="30" alignment="CENTER">
+            <VBox spacing="5" alignment="TOP_CENTER" prefWidth="150">
+                <Label text="Full Name" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                <Label fx:id="adminNameLabel" 
+                       style="-fx-padding: 8; -fx-border-color: #ddd; -fx-background-color: #fff; -fx-border-radius: 3; -fx-alignment: CENTER;" 
+                       prefWidth="150" wrapText="true"/>
+            </VBox>
+
+            <VBox spacing="5" alignment="TOP_CENTER" prefWidth="150">
+                <Label text="Username" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                <Label fx:id="adminUsernameLabel" 
+                       style="-fx-padding: 8; -fx-border-color: #ddd; -fx-background-color: #fff; -fx-border-radius: 3; -fx-alignment: CENTER;" 
+                       prefWidth="150"/>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="30" alignment="CENTER">
+            <VBox spacing="5" alignment="TOP_CENTER" prefWidth="150">
+                <Label text="Role" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                <Label fx:id="adminRoleLabel" 
+                       style="-fx-padding: 8; -fx-border-color: #ddd; -fx-background-color: #fff; -fx-border-radius: 3; -fx-alignment: CENTER;" 
+                       prefWidth="150"/>
+            </VBox>
+
+            <VBox spacing="5" alignment="TOP_CENTER" prefWidth="150">
+                <Label text="Status" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                <Label fx:id="adminStatusLabel" 
+                       style="-fx-padding: 8; -fx-border-color: #ddd; -fx-background-color: #fff; -fx-border-radius: 3; -fx-alignment: CENTER;" 
+                       prefWidth="150"/>
+            </VBox>
+        </HBox>
+
+        <VBox spacing="5" alignment="CENTER" prefWidth="320">
+            <Label text="Created At" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+            <Label fx:id="adminCreatedAtLabel" 
+                   style="-fx-padding: 8; -fx-border-color: #ddd; -fx-background-color: #fff; -fx-border-radius: 3; -fx-alignment: CENTER;" 
+                   prefWidth="200" wrapText="true"/>
+        </VBox>
+
+        <Separator/>
+
+        <!-- ACTION BUTTONS -->
+        <VBox spacing="8" alignment="CENTER" maxWidth="320">
+            <Button fx:id="deleteBtn"
+                    text="Delete Admin"
+                    onAction="#deleteAdmin"
+                    prefHeight="35"
+                    prefWidth="200"
+                    style="-fx-font-size: 11;"/>
+            <Button fx:id="promoteBtn"
+                    text="Promote to Super Admin"
+                    onAction="#promoteAdmin"
+                    prefHeight="35"
+                    prefWidth="200"
+                    style="-fx-font-size: 11;"
+                    visible="false"
+                    managed="false"/>
+            <Button fx:id="demoteBtn"
+                    text="Demote to Admin"
+                    onAction="#demoteAdmin"
+                    prefHeight="35"
+                    prefWidth="200"
+                    style="-fx-font-size: 11;"
+                    visible="false"
+                    managed="false"/>
+        </VBox>
+    </VBox>
+
+    <!-- BACK BUTTON -->
+    <HBox spacing="10" alignment="CENTER" style="-fx-padding-top: 10;">
+        <Button text="Back to Dashboard"
+                onAction="#goBack"
+                prefWidth="150"
+                prefHeight="35"
+                style="-fx-font-size: 11;"/>
+    </HBox>
+</VBox>

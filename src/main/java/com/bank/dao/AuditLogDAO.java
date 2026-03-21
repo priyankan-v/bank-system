@@ -58,4 +58,34 @@ public class AuditLogDAO {
         }
         return list;
     }
+
+    public List<AuditLog> getUserAuditbyAdmin(Connection conn, String username, int limit) throws SQLException {
+
+        List<AuditLog> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM audit_logs WHERE admin_id = ? ORDER BY created_at DESC LIMIT ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+            stmt.setInt(2, limit);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+
+                AuditLog a = new AuditLog();
+
+                a.setId(rs.getLong("id"));
+                a.setAccountNumber(rs.getString("account_number"));
+                a.setAdminId(rs.getString("admin_id"));
+                a.setEvent(rs.getString("event"));
+                a.setDescription(rs.getString("description"));
+                a.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+
+                list.add(a);
+            }
+        }
+        return list;
+    }
 }

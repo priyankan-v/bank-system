@@ -149,7 +149,7 @@ public class AuthService {
                     throw new InvalidCredentialsException("Invalid password. Try again.");
                 }
 
-                auditService.logAdmin(conn, admin.getUsername(), null,"ADMIN_LOGIN_SUCCESS",
+                auditService.logAdmin(conn, admin.getUsername(), null,"ADMIN_LOGIN",
                         "Admin logged in successfully");
                         
                 SessionManager.setCurrentAdmin(admin);
@@ -170,6 +170,20 @@ public class AuthService {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException("Unable to connect to the database.", e);
+        }
+    }
+
+    // For admin logout, we just log the event.
+    public void adminLogout(String username) {
+        try (Connection conn = DBConnection.getConnection()) {
+            auditService.logAdmin(conn, 
+                username, 
+                null, 
+                "ADMIN_LOGOUT", 
+                "Admin logged out successfully");
+            conn.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

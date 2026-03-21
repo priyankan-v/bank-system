@@ -3,42 +3,82 @@ package com.bank.controller;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import com.bank.dao.AdminDAO;
 import com.bank.dao.UserDAO;
 import com.bank.model.Admin;
 import com.bank.model.User;
+import com.bank.service.AuthService;
 import com.bank.util.DBConnection;
 import com.bank.util.SceneManager;
 import com.bank.util.SessionManager;
 
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 public class AdminDashboardController {
 
     @FXML private Label welcomeLabel;
+    @FXML private Label userNameLabel; 
     @FXML private VBox superAdminSection;
     @FXML private Label roleBadge;
-
     @FXML private TextField accountNumberField;
+    @FXML private TextField userNameField;
 
     private Admin admin;
+
+    private final AuthService authService = new AuthService();
 
     @FXML
     public void initialize() {
 
+        // Validate session - auto-logout if expired
+        if (!SessionManager.validateAndHandleTimeout()) {
+            showAlert(Alert.AlertType.WARNING, "Session Expired", 
+                "Your session has expired. Please log in again.");
+            PauseTransition pause = new PauseTransition(Duration.seconds(2));
+            pause.setOnFinished(event -> {
+                SceneManager.switchScene("admin/login.fxml");
+            });
+            pause.play();
+            return;
+        }
+
         admin = SessionManager.getCurrentAdmin();
 
-        welcomeLabel.setText("Welcome, " + admin.getUsername());
+        if (admin == null) {
+            showAlert(Alert.AlertType.ERROR, "Session Error", 
+                "Invalid session. Please log in again.");
+            PauseTransition pause = new PauseTransition(Duration.seconds(2));
+            pause.setOnFinished(event -> { 
+                SceneManager.switchScene("admin/login.fxml");
+            });
+            pause.play();
+            return;
+        }
+
+        welcomeLabel.setText("Welcome, " + admin.getName());
+        userNameLabel.setText("User Name: " + admin.getUsername());
 
         handleRoleAccess();
 
         accountNumberField.setTextFormatter(new TextFormatter<>(change -> {
             String newText = change.getControlNewText();
             if (newText.matches("\\d{0,8}")) {
+                return change;
+            } else {
+                return null;
+            }
+        }));
+
+        userNameField.setTextFormatter(new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches(".{0,6}")) {
                 return change;
             } else {
                 return null;
@@ -61,7 +101,6 @@ public class AdminDashboardController {
         }
     }
     // ---------------- ADMIN OPS ----------------
-
     @FXML
     private void changePassword() {
         SceneManager.switchScene("admin/change-password.fxml");
@@ -78,21 +117,41 @@ public class AdminDashboardController {
     }
 
     @FXML
-    private void deleteAdmin() {
-        SceneManager.switchScene("admin/delete-admin.fxml");
+    private void checkAdmin() {
+
+        String userName = userNameField.getText().trim();
+
+        // --- Basic validation ---
+        if (userName.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Invalid User Name", "User name is required.");
+            return;
+        }
+
+        if (!userName.matches(".{6}")) {
+            userNameField.clear();
+            showAlert(Alert.AlertType.ERROR, "Invalid User Name", "Incorrect format.");
+            return;
+        }
+
+        try (Connection conn = DBConnection.getConnection()) { 
+            Admin admin = new AdminDAO().findByUsername(conn, userName);
+
+            if (admin == null) {
+                userNameField.clear();
+                showAlert(Alert.AlertType.ERROR, "Admin Not Found", "No active admin found with this user name.");
+                return;
+            }
+
+            SessionManager.setCurrentTargetAdmin(admin);
+
+            SceneManager.switchScene("admin/targetAdminDashboard.fxml");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Unable to check admin. Please try again.");
+        }
     }
 
-    @FXML
-    private void promoteAdmin() {
-        SceneManager.switchScene("admin/promote.fxml");
-    }
-
-    @FXML
-    private void demoteAdmin() {
-        SceneManager.switchScene("admin/demote.fxml");
-    }
-
-    // ---------------- ACCOUNT OPS ----------------
     // @FXML
     // private void deleteAccount() {
     //     SceneManager.switchScene("account/delete.fxml");
@@ -118,6 +177,7 @@ public class AdminDashboardController {
     //     SceneManager.switchScene("account/change-pin.fxml");
     // }
 
+    // ---------------- ACCOUNT OPS ----------------
     @FXML
     private void checkAccount() {
 
@@ -163,6 +223,7 @@ public class AdminDashboardController {
 
     @FXML
     private void logout() {
+        authService.adminLogout(admin.getUsername());
         SessionManager.logout();
         SceneManager.switchScene("admin/login.fxml");
     }

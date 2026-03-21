@@ -14,10 +14,13 @@
         <Insets top="30" bottom="30" left="30" right="30"/>
     </padding>
 
-    <HBox spacing="10" alignment="CENTER">
+    <VBox spacing="8" alignment="CENTER">
 
         <Label fx:id="welcomeLabel"
                style="-fx-font-size:22px; -fx-font-weight:bold;" />
+
+        <Label fx:id="userNameLabel"
+                style="-fx-font-size: 16px; -fx-text-fill: #666666;" />
 
         <Label fx:id="roleBadge"
                visible="false"
@@ -29,8 +32,7 @@
                    -fx-background-radius: 10;
                    -fx-font-weight: bold;
                "/>
-
-    </HBox>
+    </VBox>
 
     <HBox spacing="100" alignment="CENTER">
 
@@ -41,13 +43,13 @@
             <Label text="Admin Operations"
                    style="-fx-font-size:18px; -fx-font-weight:bold;" />
 
-            <Button text="Change Password"
+            <Button text="Change My Password"
                     onAction="#changePassword"
                     prefWidth="180" prefHeight="40"
                     maxWidth="Infinity"
                     alignment="CENTER"/>
 
-            <Button text="View Activity"
+            <Button text="View My Activity"
                     onAction="#viewActivity"
                     prefWidth="180" prefHeight="40"
                     maxWidth="Infinity"
@@ -58,14 +60,14 @@
                   spacing="10"
                   alignment="TOP_CENTER">
 
-                <!-- <Label text="Admin Management"
-                       style="-fx-font-weight:bold;" /> -->
+                <Label text="Admin Management"
+                       style="-fx-font-weight:bold;" />
 
                 <Button text="Add Admin"
                         onAction="#addAdmin"
-                        prefWidth="180" prefHeight="40"/>
+                        prefWidth="180" prefHeight="40" maxWidth="Infinity"/>
 
-                <Button text="Delete Admin"
+                <!-- <Button text="Delete Admin"
                         onAction="#deleteAdmin"
                         prefWidth="180" prefHeight="40"/>
 
@@ -75,7 +77,17 @@
 
                 <Button text="Demote Admin"
                         onAction="#demoteAdmin"
-                        prefWidth="180" prefHeight="40"/>
+                        prefWidth="180" prefHeight="40"/> -->
+                <Region prefHeight="3"/>
+
+                <HBox spacing="8" alignment="CENTER">
+                        <TextField fx:id="userNameField"
+                                promptText="Admin User Name"
+                                prefWidth="120"/>
+                        <Button text="Check"
+                                onAction="#checkAdmin"
+                                prefWidth="60" prefHeight="30" maxWidth="Infinity"/>
+                </HBox>
 
             </VBox>
 

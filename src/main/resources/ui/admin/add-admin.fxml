@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="15" alignment="TOP_CENTER" prefWidth="400" style="-fx-padding: 20;"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.bank.controller.AddAdminController">
+
+    <!-- TITLE -->
+    <Label text="Create New Admin" style="-fx-font-size: 16; -fx-font-weight: bold;" alignment="CENTER"/>
+
+    <!-- ERROR MESSAGE SECTION -->
+    <VBox fx:id="errorBox" 
+       spacing="8" 
+       alignment="CENTER" 
+       visible="false" 
+       managed="false"
+       maxWidth="300"
+       style="-fx-padding: 10; -fx-border-color: #ff6b6b; -fx-background-color: #ffe0e0; -fx-border-radius: 5; -fx-background-radius: 5;">
+        <Label fx:id="errorLabel"
+               style="-fx-font-weight: bold; -fx-text-fill: #d9534f; -fx-wrap-text: true;" 
+               alignment="CENTER"
+               wrapText="true"/>
+    </VBox>
+
+    <!-- INPUT SECTION -->
+    <VBox fx:id="inputSection" spacing="10" alignment="CENTER" maxWidth="250" style="-fx-border-color: #e0e0e0; -fx-padding: 15; -fx-border-radius: 5;">
+        <Label text="Admin Name:" style="-fx-font-weight: bold;" alignment="CENTER"/>
+        <TextField fx:id="adminName"
+                   promptText="Enter full name"
+                   prefHeight="35"
+                   maxWidth="200"/>
+        <Button text="Create Admin"
+                onAction="#createAdmin"
+                prefHeight="35"
+                maxWidth="150"
+                style="-fx-font-size: 12; -fx-padding: 5;"/>
+    </VBox>
+
+    <!-- SUCCESS RESULT SECTION -->
+    <VBox fx:id="resultBox" 
+       spacing="12" 
+       alignment="CENTER" 
+       visible="false" 
+       managed="false"
+       maxWidth="320"
+       style="-fx-padding: 15; -fx-border-color: #5cb85c; -fx-background-color: #e8f5e9; -fx-border-radius: 5; -fx-background-radius: 5;">
+
+        <Label fx:id="successLabel"
+               style="-fx-font-weight: bold; -fx-text-fill: #27ae60; -fx-font-size: 14;" 
+               alignment="CENTER"
+               wrapText="true"/>
+
+        <Separator/>
+
+        <VBox spacing="10" alignment="CENTER">
+            <HBox spacing="30" alignment="CENTER">
+                <VBox spacing="8" alignment="CENTER">
+                    <Label text="Admin Name:" style="-fx-text-fill: #555; -fx-font-weight: bold;"/>
+                    <Label fx:id="nameLabel" style="-fx-padding: 8; -fx-border-color: #ddd; -fx-background-color: #f9f9f9; -fx-border-radius: 3; -fx-alignment: center;"
+                     prefWidth="120" />
+                </VBox>
+
+                <VBox spacing="8" alignment="CENTER">
+                    <Label text="Username:" style="-fx-text-fill: #555; -fx-font-weight: bold;"/>
+                    <Label fx:id="usernameLabel" style="-fx-padding: 8; -fx-border-color: #ddd; -fx-background-color: #f9f9f9; -fx-border-radius: 3; -fx-alignment: center;" prefWidth="120"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="30" alignment="CENTER">
+                <VBox spacing="8" alignment="CENTER">
+                    <Label text="Role:" style="-fx-text-fill: #555; -fx-font-weight: bold;"/>
+                    <Label fx:id="roleLabel" style="-fx-padding: 8; -fx-border-color: #ddd; -fx-background-color: #f9f9f9; -fx-border-radius: 3; -fx-alignment: center;" prefWidth="120"/>
+                </VBox>
+
+                <VBox spacing="8" alignment="CENTER">
+                    <Label text="Status:" style="-fx-text-fill: #555; -fx-font-weight: bold;"/>
+                    <Label fx:id="statusLabel" style="-fx-padding: 8; -fx-border-color: #ddd; -fx-background-color: #f9f9f9; -fx-border-radius: 3; -fx-alignment: center;" prefWidth="120"/>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <Separator/>
+
+        <Label text="Generated Password:" style="-fx-font-weight: bold; -fx-text-fill: #d9534f; -fx-font-size: 12;" alignment="CENTER"/>
+        
+        <VBox spacing="8" alignment="CENTER" maxWidth="280">
+            <HBox spacing="8" alignment="CENTER">
+                <!-- Password hidden -->
+                <PasswordField fx:id="passwordField"
+                               editable="false"
+                               prefHeight="32"
+                               prefWidth="180"/>
+
+                <!-- Password visible -->
+                <TextField fx:id="passwordVisibleField"
+                           editable="false"
+                           visible="false"
+                           managed="false"
+                           prefHeight="32"
+                           prefWidth="180"/>
+
+                <Button text="Show/Hide"
+                        onAction="#togglePasswordVisibility"
+                        prefWidth="85"
+                        prefHeight="32"/>
+            </HBox>
+
+            <Label wrapText="true" maxWidth="400" alignment="CENTER"
+                style="-fx-font-size: 10; -fx-text-fill: #ff9805;">
+                    Share this password securely.
+                    The admin must change it on first login.
+            </Label>
+        </VBox>
+
+    </VBox>
+
+    <!-- BUTTON SECTION -->
+    <HBox spacing="15" alignment="CENTER">
+        <Button text="Back to Dashboard" 
+                onAction="#goBack"
+                prefWidth="130"
+                prefHeight="35"
+                style="-fx-font-size: 11;"/>
+
+        <Button fx:id="createAnotherBtn" 
+                text="Create Another" 
+                onAction="#resetForm"
+                prefWidth="130"
+                prefHeight="35"
+                style="-fx-font-size: 11;"
+                visible="false"
+                managed="false"/>
+    </HBox>
+
+</VBox>

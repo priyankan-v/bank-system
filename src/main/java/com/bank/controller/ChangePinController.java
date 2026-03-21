@@ -28,7 +28,7 @@ public class ChangePinController {
 
     private final AccountService accountService = new AccountService();
 
-        @FXML
+    @FXML
     public void initialize() {
 
         // Limit account number to 8 digits only

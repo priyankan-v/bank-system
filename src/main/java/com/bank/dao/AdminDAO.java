@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import com.bank.model.Admin;
+import com.bank.util.PasswordUtil;
 
 
 public class AdminDAO {
@@ -70,6 +71,45 @@ public class AdminDAO {
             stmt.setString(2, username);
 
             stmt.executeUpdate();
+        }
+    }
+
+    //  UPDATE PASSWORD 
+    public void updatePassword(Connection conn, String username, String newPassword) throws SQLException {
+
+        String newPasswordHash = PasswordUtil.hash(newPassword); // Hash the new password
+
+        String sql = "UPDATE admins SET password_hash = ? WHERE username = ? AND active = TRUE";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newPasswordHash);
+            stmt.setString(2, username);
+
+            stmt.executeUpdate();
+
+        }
+    }
+
+    // VERIFY PASSWORD
+    public boolean verifyPassword(Connection conn, String username, String rawPassword) throws SQLException {
+
+        String sql = "SELECT password_hash FROM admins WHERE username = ? AND active = TRUE";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+
+                String storedHash = rs.getString("password_hash");
+
+                return PasswordUtil.verify(rawPassword, storedHash); // BCrypt check
+            }
+
+            return false;
         }
     }
 

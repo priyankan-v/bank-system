@@ -161,7 +161,7 @@ public class AdminService {
     }
 
     // CREATE ADMIN ACCOUNT
-    public void createAdmin(Admin creator, String name, String password, String role) {
+    public String createAdmin(Admin creator, String name, String password, String role) {
 
         try (Connection conn = DBConnection.getConnection()) {
             conn.setAutoCommit(false);
@@ -194,7 +194,7 @@ public class AdminService {
                     );
 
                     conn.commit();
-                    return;
+                    return username;
                 }
 
                 // AFTER FIRST ADMIN EXISTS
@@ -219,6 +219,7 @@ public class AdminService {
                 );
 
                 conn.commit();
+                return username;
 
             } catch (Exception e) {
 
@@ -365,6 +366,46 @@ public class AdminService {
         }
     }
 
+        // CHANGE ADMIN PASSWORD
+    public void changeAdminPassword(Admin admin, String oldPassword, String newPassword) {
+
+        try (Connection conn = DBConnection.getConnection()) {
+
+            conn.setAutoCommit(false);
+
+            try {
+
+                // Verify old password
+                boolean valid = adminDAO.verifyPassword(conn, admin.getUsername(), oldPassword);
+
+                if (!valid) {
+                    throw new RuntimeException("Incorrect current password");
+                }
+
+                // Update password
+                adminDAO.updatePassword(conn, admin.getUsername(), newPassword);
+
+                // Audit log
+                auditService.logAdmin(
+                        conn,
+                        admin.getUsername(),
+                        null,
+                        "PASSWORD_CHANGE",
+                        "Admin changed password"
+                );
+
+                conn.commit();
+
+            } catch (RuntimeException e) {
+                conn.rollback();
+                throw e;
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Password change failed. Rolled back.", e);
+        }
+    }
+
     // GET ACCOUNT TRANSACTIONS
     public List<Transaction> getAccountTransactions(String accountNumber, int limit) {
 
@@ -377,11 +418,22 @@ public class AdminService {
         }
     }
 
-    // GET AUDIT LOGS
+    // GET USER AUDIT LOGS
     public List<AuditLog> getUserAuditLogs(String accountNumber, int limit) {
         try (Connection conn = DBConnection.getConnection()) {
 
             return auditLogDAO.getUserAudit(conn, accountNumber, limit);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch audit logs", e);
+        }
+    }
+
+    // GET AUDIT LOGS FOR ADMIN VIEW
+    public List<AuditLog> getUserAuditbyAdminLogs(String username, int limit) {
+        try (Connection conn = DBConnection.getConnection()) {
+
+            return auditLogDAO.getUserAuditbyAdmin(conn, username, limit);
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to fetch audit logs", e);

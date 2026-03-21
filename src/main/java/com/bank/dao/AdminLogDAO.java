@@ -33,11 +33,11 @@ public class AdminLogDAO {
 
         List<AdminLog> list = new ArrayList<>();
 
-        String sql = "SELECT * FROM admin_logs WHERE target_id = ? ORDER BY created_at DESC LIMIT ?";
+        String sql = "SELECT * FROM admin_logs WHERE performedId = ? ORDER BY created_at DESC LIMIT ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, username);
+            stmt.setObject(1, username);
             stmt.setInt(2, limit);
 
             ResultSet rs = stmt.executeQuery();
@@ -47,8 +47,8 @@ public class AdminLogDAO {
                 AdminLog a = new AdminLog();
 
                 a.setId(rs.getLong("id"));
-                a.setPerformedId(rs.getString("performed_id"));
-                a.setTargetId(rs.getString("target_id"));
+                a.setPerformedId(rs.getString("performedId"));
+                a.setTargetId(rs.getString("targetId"));
                 a.setEvent(rs.getString("event"));
                 a.setDescription(rs.getString("description"));
                 a.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
